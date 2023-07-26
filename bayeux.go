@@ -143,19 +143,17 @@ func (b *Bayeux) getClientID() error {
 }
 
 // ReplayAll replay for past 24 hrs
-const ReplayAll = -2
+const ReplayAll Replay = -2
 
 // ReplayNone start playing events at current moment
-const ReplayNone = -1
+const ReplayNone Replay = -1
 
 // Replay accepts the following values
 // Value
 // -2: replay all events from past 24 hrs
 // -1: start at current
 // >= 0: start from this event number
-type Replay struct {
-	Value int
-}
+type Replay int
 
 func (b *Bayeux) subscribe(topic string, replay Replay) Subscription {
 	handshake := fmt.Sprintf(`{
@@ -283,8 +281,8 @@ func (b *Bayeux) TopicToChannel(creds Credentials, topic string) chan TriggerEve
 	if err != nil {
 		log.Fatal("Unable to get bayeux ClientId")
 	}
-	r := Replay{ReplayAll}
-	b.subscribe(topic, r)
+
+	b.subscribe(topic, ReplayAll)
 	c := b.connect()
 	wg.Add(1)
 	return c
